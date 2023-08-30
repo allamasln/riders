@@ -1,6 +1,10 @@
 const { Router } = require('express')
 const customerController = require('../controllers/customers')
-const { upload, customerValidationSchema } = require('../models/customer')
+const {
+	upload,
+	customerValidationSchema,
+	customerUpdateValidationSchema,
+} = require('../models/customer')
 
 const validateParamId = require('../utils/validateParamId')
 
@@ -30,7 +34,7 @@ router.put(
 	'/:customerId',
 	upload.single('logo'),
 	validateParamId('customerId'),
-	customerValidationSchema,
+	customerUpdateValidationSchema,
 	validate,
 	customerController.update
 )

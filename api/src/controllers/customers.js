@@ -30,6 +30,7 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
+	if (!req.file) req.file = {}
 	const { path: logo, filename: logoCloudinaryId } = req.file
 	const { customerId } = req.params
 

@@ -20,7 +20,7 @@ const LOGO_TYPES = {
 
 const validateLogo = (type) => LOGO_TYPES[type]
 
-const customerValidationSchema = [
+const customerUpdateValidationSchema = [
 	body('name')
 		.notEmpty()
 		.withMessage('El nombre es obligatorio')
@@ -36,6 +36,10 @@ const customerValidationSchema = [
 		}),
 	body('latitude').isNumeric(),
 	body('longitude').isNumeric(),
+]
+
+const customerValidationSchema = [
+	...customerUpdateValidationSchema,
 	body('logo')
 		.custom((_, { req }) => req.file)
 		.withMessage('El logo es obligatorio')
@@ -49,3 +53,4 @@ const customerValidationSchema = [
 exports.Customer = Customer
 exports.upload = createUploader(validateLogo)
 exports.customerValidationSchema = customerValidationSchema
+exports.customerUpdateValidationSchema = customerUpdateValidationSchema
