@@ -12,7 +12,6 @@ router.get('/', workdayController.getAll)
 router.get(
 	'/:workdayId',
 	validateParamId('workdayId'),
-	workdayValidationSchema,
 	validate,
 	workdayController.getOne
 )
