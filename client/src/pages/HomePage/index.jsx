@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/auth'
 
 function HomePage() {
 	const [user] = useAuth()
+
 	const { workdays } = useWorkdays()
 
 	const [open, setOpen] = React.useState(false)
