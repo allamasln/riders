@@ -14,10 +14,11 @@ const validationSchema = yup.object().shape({
 	name: yup.string().required('Campo name obligatorio'),
 	latitude: yup.number().required('Campo latitud obligatorio'),
 	longitude: yup.number().required('Campo longitud obligatorio'),
-	logo: yup.mixed().required('Campo logo obligatorio'),
 })
 
 const getErrorsFromResponse = (ex) => {
+	if (ex.response.status === 500) return ''
+
 	const errors = {}
 
 	ex.response.data.forEach((fieldError) => {

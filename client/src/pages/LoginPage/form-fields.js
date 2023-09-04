@@ -1,20 +1,13 @@
 import * as yup from 'yup'
 
 const getFormFields = () => [
-	{ name: 'name', label: 'Nombre' },
-	{ name: 'latitude', label: 'Latitude' },
-	{ name: 'longitude', label: 'Longitude' },
-	{
-		name: 'logo',
-		type: 'file',
-	},
+	{ name: 'username', label: 'Username', placeholder: 'eg: Manolito' },
+	{ name: 'password', label: 'Password', type: 'password' },
 ]
 
 const validationSchema = yup.object().shape({
-	name: yup.string().required('Campo name obligatorio'),
-	latitude: yup.number().required('Campo latitud obligatorio'),
-	longitude: yup.number().required('Campo longitud obligatorio'),
-	logo: yup.mixed().required('Campo logo obligatorio'),
+	username: yup.string().required('username obligatorio'),
+	password: yup.string().required('password obligatorio'),
 })
 
 const getErrorsFromResponse = (ex) => {

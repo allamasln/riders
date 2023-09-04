@@ -1,81 +1,119 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
-import { FormControl, TextField, Box, Stack } from '@mui/material'
-
-import { useDropzone } from 'react-dropzone'
+import {
+	FormControl,
+	TextField,
+	FormGroup,
+	Stack,
+	MenuItem,
+	Select,
+	OutlinedInput,
+} from '@mui/material'
 
 const InputField = ({ name, errors, value, ...rest }) => {
 	return (
 		<FormControl>
-			<TextField
-				error={errors}
-				helperText={errors?.message}
-				id={name}
-				{...rest}
-				value={value || ''}
-				variant="standard"
-			/>
+			<FormGroup>
+				<TextField
+					error={!!errors}
+					helperText={errors?.message}
+					id={name}
+					{...rest}
+					value={value || ''}
+					variant="standard"
+				/>
+			</FormGroup>
 		</FormControl>
 	)
 }
 
-// const FileField = ({
-// 	name,
-// 	label,
-// 	errors,
-// 	onChange,
-// 	value,
-// 	setValue,
-// 	clearErrors,
-// 	...rest
-// }) => {
-// 	const [preview, setPreview] = useState(value)
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
+const MenuProps = {
+	PaperProps: {
+		style: {
+			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+			width: 250,
+		},
+	},
+}
 
-// 	const { getRootProps, getInputProps, isDragActive, isDragReject } =
-// 		useDropzone({
-// 			multiple: false,
-// 			accept: {
-// 				'image/jpeg': ['.jpeg', '.jpg'],
-// 				'image/png': ['.png'],
-// 			},
-// 			onDropAccepted: function (acceptedFiles) {
-// 				setPreview(URL.createObjectURL(acceptedFiles[0]))
-// 				setValue(name, acceptedFiles[0])
-// 				clearErrors(name)
-// 			},
-// 		})
+const SelectField = ({
+	name,
+	label,
+	errors,
+	value = [],
+	options,
+	placeholder,
+	...rest
+}) => {
+	console.log(rest)
+	return (
+		<FormControl sx={{ m: 1, width: 300 }}>
+			<Select
+				labelId="demo-multiple-name-label"
+				id="demo-multiple-name"
+				value={value}
+				displayEmpty
+				{...rest}
+				input={<OutlinedInput />}
+				renderValue={(selected) => {
+					if (selected.length === 0) {
+						return <em>{placeholder}</em>
+					}
 
-// 	return (
-// 		<FieldWrapper errors={errors} name={name} label={label}>
-// 			<Stack direction="row">
-// 				<Box
-// 					{...getRootProps()}
-// 					lineHeight="100px"
-// 					border={'1px dashed ' + (errors ? 'red' : 'gray')}
-// 					w="100%"
-// 				>
-// 					<Input
-// 						id={name}
-// 						{...rest}
-// 						{...getInputProps()}
-// 						value={value?.filename}
-// 						onChange={(e) => {
-// 							onChange(e.target.files[0])
-// 						}}
-// 					/>
+					return typeof selected === 'string' ? selected : selected.join(', ')
+				}}
+				MenuProps={MenuProps}
+			>
+				<MenuItem disabled value="">
+					<em>{placeholder}</em>
+				</MenuItem>
 
-// 					<Text align="center" color="gray" fontSize="2rem">
-// 						{!isDragActive
-// 							? '+'
-// 							: isDragReject
-// 							? 'Bad type file'
-// 							: 'Drop here...'}
-// 					</Text>
-// 				</Box>
-// 				{preview && <Image src={preview} h="100px" width="30%" fit="cover" />}
-// 			</Stack>
-// 		</FieldWrapper>
-// 	)
-// }
+				{options.map((option) => (
+					<MenuItem key={option.value} value={option.value}>
+						{option.value ? option.label : <em>{option.label}</em>}
+					</MenuItem>
+				))}
+			</Select>
+		</FormControl>
+	)
+}
 
-export default { input: InputField }
+const FileField = ({ name, errors, onChange, value, multiple, ...rest }) => {
+	const [preview, setPreview] = useState(value)
+
+	const inputRef = useRef()
+
+	useEffect(() => {
+		if (value) return
+
+		setPreview('')
+		inputRef.current.value = ''
+	}, [value])
+
+	return (
+		<Stack>
+			<img src={preview} />
+			<FormControl>
+				<FormGroup>
+					<TextField
+						error={!!errors}
+						helperText={errors?.message}
+						id={name}
+						{...rest}
+						value={value?.filename}
+						inputRef={inputRef}
+						onChange={(e) => {
+							onChange(e.target.files[0])
+							setPreview(URL.createObjectURL(e.target.files[0]))
+						}}
+						inputProps={{ multiple }}
+					/>
+				</FormGroup>
+			</FormControl>
+		</Stack>
+	)
+}
+
+export default { input: InputField, select: SelectField, file: FileField }

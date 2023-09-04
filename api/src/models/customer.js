@@ -20,7 +20,7 @@ const LOGO_TYPES = {
 
 const validateLogo = (type) => LOGO_TYPES[type]
 
-const customerUpdateValidationSchema = [
+const commonValidationSchema = [
 	body('name')
 		.notEmpty()
 		.withMessage('El nombre es obligatorio')
@@ -38,8 +38,22 @@ const customerUpdateValidationSchema = [
 	body('longitude').isNumeric(),
 ]
 
+const customerUpdateValidationSchema = [
+	...commonValidationSchema,
+	body('logo')
+		.custom((_, { req }) => {
+			if (!req.file) return true
+
+			return validateLogo(req.file.mimetype)
+		})
+		.withMessage(
+			'El logo debe estar en uno de los formatos permitidos ' +
+				Object.values(LOGO_TYPES).join('/')
+		),
+]
+
 const customerValidationSchema = [
-	...customerUpdateValidationSchema,
+	...commonValidationSchema,
 	body('logo')
 		.custom((_, { req }) => req.file)
 		.withMessage('El logo es obligatorio')

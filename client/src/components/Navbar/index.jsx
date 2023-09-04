@@ -14,11 +14,15 @@ import {
 
 import MenuIcon from '@mui/icons-material/Menu'
 
+import { useAuth } from '../../hooks/auth'
+
 import { stringAvatar } from './helpers'
 
 import Brand from './Brand'
 import { Menu, CollapseMenu } from '../../components'
 function Navbar() {
+	const [user] = useAuth()
+
 	const [anchorElNav, setAnchorElNav] = useState(null)
 	const [anchorElUser, setAnchorElUser] = useState(null)
 
@@ -29,11 +33,12 @@ function Navbar() {
 		{ label: 'Home', to: '/' },
 		{ label: 'Customers', to: '/customers' },
 	]
-	const optionsUserMenu = [
-		{ label: 'Login', to: '/login' },
-		{ label: 'Regiter', to: '/register' },
-		{ label: 'Logout', to: '/logout' },
-	]
+	const optionsUserMenu = user.auth
+		? [{ label: 'Logout', to: '/logout' }]
+		: [
+				{ label: 'Login', to: '/login' },
+				{ label: 'Regiter', to: '/register' },
+		  ]
 
 	return (
 		<AppBar position="static" color="primary">

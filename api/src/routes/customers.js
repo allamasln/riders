@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const customerController = require('../controllers/customers')
+const customerController = require('../controllers/customer')
 const {
 	upload,
 	customerValidationSchema,
@@ -14,9 +14,10 @@ const admin = require('../middlewares/admin')
 
 const router = Router()
 
-router.get('/', customerController.getAll)
+router.get('/', auth, customerController.getAll)
 router.get(
 	'/:customerId',
+	auth,
 	validateParamId('customerId'),
 	validate,
 	customerController.getOne
@@ -24,6 +25,7 @@ router.get(
 
 router.post(
 	'/',
+	[auth, admin],
 	upload.single('logo'),
 	customerValidationSchema,
 	validate,

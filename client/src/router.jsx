@@ -1,11 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import RootLayout from './layout/RootLayout'
-import ErrorPage from './pages/ErrorPage'
-import HomePage from './pages/HomePage'
-import CustomersPage from './pages/CustomersPage'
-import NewWorkdayPage from './pages/NewWorkDayPage'
-import NewCustomerPage from './pages/NewCustomerPage'
+import RootLayout from 'layouts/RootLayout'
+import ErrorPage from 'pages/ErrorPage'
+import HomePage from 'pages/HomePage'
+import CustomersPage from 'pages/CustomersPage'
+import NewCustomerPage from 'pages/NewCustomerPage'
+import EditCustomerPage from 'pages/EditCustomerPage'
+import LoginPage from 'pages/LoginPage'
+import LogoutPage from 'pages/LogoutPage'
+import RegisterPage from 'pages/RegisterPage'
+
+import ProtectedRoute from './utils/ProtectedRoute'
 
 const router = createBrowserRouter([
 	{
@@ -18,16 +23,28 @@ const router = createBrowserRouter([
 				element: <HomePage />,
 			},
 			{
-				path: '/workday/new',
-				element: <NewWorkdayPage />,
+				path: '/customers',
+				element: <ProtectedRoute page={CustomersPage} role="auth" />,
 			},
 			{
 				path: '/customer/new',
-				element: <NewCustomerPage />,
+				element: <ProtectedRoute page={NewCustomerPage} role="admin" />,
 			},
 			{
-				path: '/customers',
-				element: <CustomersPage />,
+				path: '/customer/edit/:customerId',
+				element: <EditCustomerPage />,
+			},
+			{
+				path: '/login',
+				element: <ProtectedRoute page={LoginPage} role="anonymous" />,
+			},
+			{
+				path: '/register',
+				element: <ProtectedRoute page={RegisterPage} role="anonymous" />,
+			},
+			{
+				path: '/logout',
+				element: <ProtectedRoute page={LogoutPage} role="auth" />,
 			},
 		],
 	},

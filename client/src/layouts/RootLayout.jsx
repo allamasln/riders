@@ -2,8 +2,8 @@ import { Outlet } from 'react-router-dom'
 
 import { Container, Stack } from '@mui/material'
 
-import { Navbar } from '../components'
-
+import { Navbar } from 'components'
+import { ToastContainer } from 'react-toastify'
 function RootLayout() {
 	// const paddingX = useMediaQuery(theme.breakpoints.up('md')) ? '80px' : '16px'
 	// const gap = useMediaQuery(theme.breakpoints.up('md')) ? '48px' : '24px'
@@ -18,6 +18,19 @@ function RootLayout() {
 			<Container maxWidth="xl" sx={{ mt: 5 }}>
 				<Outlet />
 			</Container>
+
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="colored"
+			/>
 		</Container>
 	)
 }

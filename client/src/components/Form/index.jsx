@@ -1,4 +1,4 @@
-import { Button, Typography, Box } from '@mui/material'
+import { Button, Typography, Box, Stack } from '@mui/material'
 
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -6,8 +6,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { transformData } from './helpers'
 
 import fields from './fields'
+import _ from 'lodash'
 
 const Form = ({
+	errorsFromResponse,
 	heading,
 	formFields,
 	buttonLabel,
@@ -18,46 +20,51 @@ const Form = ({
 	const {
 		handleSubmit,
 		control,
-		setValue,
-		clearErrors,
+		reset,
 		formState: { errors },
 	} = useForm({
-		defaultValues: defaultValues,
+		defaultValues,
 		resolver: yupResolver(validationSchema),
 	})
-	console.log(errors)
+
 	return (
-		<form onSubmit={handleSubmit((data) => onSubmit(transformData(data)))}>
+		<form
+			onSubmit={handleSubmit((data) => onSubmit(transformData(data), reset))}
+		>
 			<Typography variant="h2" component="h2" mb="2rem">
 				{heading}
 			</Typography>
 
-			{formFields.map(({ name, ...rest }) => {
-				const InputForm = fields[rest.type] || fields.input
+			<Stack spacing={3} width="50vw">
+				{formFields.map(({ name, ...rest }) => {
+					const InputForm = fields[rest.type] || fields.input
 
-				if (rest.type === 'file') rest = { ...rest, setValue, clearErrors }
-
-				return (
-					<Controller
-						key={name}
-						control={control}
-						name={name}
-						render={({ field: { ref, ...field } }) => {
-							return (
-								<InputForm
-									errors={errors[name]}
-									name={name}
-									{...rest}
-									{...field}
-								/>
-							)
-						}}
-					/>
-				)
-			})}
-
-			<Box mt="2rem">
-				<Button type="submit">{buttonLabel}</Button>
+					return (
+						<Controller
+							key={name}
+							control={control}
+							name={name}
+							render={({ field: { ref, ...field } }) => {
+								return (
+									<InputForm
+										errors={
+											errors[name] ||
+											(errorsFromResponse && errorsFromResponse[name])
+										}
+										name={name}
+										{...rest}
+										{...field}
+									/>
+								)
+							}}
+						/>
+					)
+				})}
+			</Stack>
+			<Box mt="2rem" align="right">
+				<Button type="submit" color="secondary" variant="contained">
+					{buttonLabel}
+				</Button>
 			</Box>
 		</form>
 	)

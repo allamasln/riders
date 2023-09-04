@@ -20,6 +20,7 @@ const register = async (req, res) => {
 
 	const token = newUser.generateJWT()
 
+	res.setHeader('Access-Control-Expose-Headers', 'x-auth-token')
 	res.setHeader('x-auth-token', token)
 	res.json({ message: 'Usuario registrado y logueado' })
 }
@@ -43,6 +44,7 @@ const login = async (req, res) => {
 
 	const token = user.generateJWT()
 
+	res.setHeader('Access-Control-Expose-Headers', 'x-auth-token')
 	res.setHeader('x-auth-token', token)
 	res.json({ message: 'Usuario logueado' })
 }
